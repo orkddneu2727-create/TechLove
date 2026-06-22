@@ -40,23 +40,23 @@ MODELS = {
         "description": "Молниеносная лёгкая модель. Идеальна для быстрых ответов.",
         "emoji": "⚡",
     },
-    "qwen": {
-        "name": "Qwen QwQ 32B",
-        "model_id": "qwen-qwq-32b",
-        "description": "Мощная модель с глубоким мышлением. Отличный баланс качества и скорости.",
+    "qwen3_32b": {
+        "name": "Qwen3 32B",
+        "model_id": "qwen/qwen3-32b",
+        "description": "Флагманская модель Alibaba. Глубокое мышление и высокое качество.",
         "emoji": "🌀",
     },
-    "deepseek_r1": {
-        "name": "DeepSeek R1",
-        "model_id": "deepseek-r1-distill-llama-70b",
-        "description": "Модель с цепочкой рассуждений. Лучший выбор для логики и математики.",
-        "emoji": "🔬",
+    "qwen3_27b": {
+        "name": "Qwen3.6 27B",
+        "model_id": "qwen/qwen3.6-27b",
+        "description": "Новейшая Qwen3.6. Отличный баланс скорости и интеллекта.",
+        "emoji": "🔮",
     },
-    "gemma2": {
-        "name": "Gemma 2 9B",
-        "model_id": "gemma2-9b-it",
-        "description": "Компактная модель от Google. Быстро и качественно.",
-        "emoji": "💎",
+    "compound": {
+        "name": "Groq Compound",
+        "model_id": "groq/compound",
+        "description": "Составная модель от Groq. Объединяет несколько ИИ для лучшего результата.",
+        "emoji": "⚗️",
     },
 }
 
