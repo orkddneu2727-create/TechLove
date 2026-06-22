@@ -40,10 +40,10 @@ MODELS = {
         "description": "Молниеносная лёгкая модель. Идеальна для быстрых ответов.",
         "emoji": "⚡",
     },
-    "mixtral": {
-        "name": "Mixtral 8x7B",
-        "model_id": "mixtral-8x7b-32768",
-        "description": "Mixtral от Mistral AI. Отличный баланс скорости и качества.",
+    "qwen": {
+        "name": "Qwen QwQ 32B",
+        "model_id": "qwen-qwq-32b",
+        "description": "Мощная модель с глубоким мышлением. Отличный баланс качества и скорости.",
         "emoji": "🌀",
     },
     "deepseek_r1": {
