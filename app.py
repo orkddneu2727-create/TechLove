@@ -19,13 +19,7 @@ logger = logging.getLogger(__name__)
 BOT_TOKEN = os.environ["BOT_TOKEN"]
 GROQ_API_KEY = os.environ["GROQ_API_KEY"]
 
-# Адрес API Groq настраивается через переменную окружения GROQ_BASE_URL,
-# чтобы можно было указать шлюз/прокси-хост без изменения кода.
-# По умолчанию используется настоящий официальный адрес API Groq.
-base_url = os.environ.get("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
-
-groq_client = AsyncGroq(api_key=GROQ_API_KEY, base_url=base_url)
-logger.info(f"Groq client base_url = {base_url}")
+groq_client = AsyncGroq(api_key=GROQ_API_KEY)
 
 MODELS = {
     "llama4_scout": {
