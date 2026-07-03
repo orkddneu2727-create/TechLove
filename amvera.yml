@@ -8,6 +8,5 @@ build:
   requirementsPath: requirements.txt
 
 run:
-  persistent: true
   containerPort: 80
   command: python app.py
