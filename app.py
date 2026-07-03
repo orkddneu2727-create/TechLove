@@ -21,7 +21,7 @@ GROQ_API_KEY = os.environ["GROQ_API_KEY"]
 
 # Запросы к Groq идут через встроенный бесплатный шлюз хостинга Amvera,
 # чтобы обходиться без сторонних прокси-серверов.
-AMVERA_GATEWAY_URL = "https://amvera.ru"
+AMVERA_GATEWAY_URL = "https://groq.amvera.ru/v1"
 
 groq_client = AsyncGroq(api_key=GROQ_API_KEY, base_url=AMVERA_GATEWAY_URL)
 logger.info(f"Groq client base_url = {AMVERA_GATEWAY_URL}")
