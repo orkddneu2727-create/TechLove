@@ -19,12 +19,12 @@ logger = logging.getLogger(__name__)
 BOT_TOKEN = os.environ["BOT_TOKEN"]
 GROQ_API_KEY = os.environ["GROQ_API_KEY"]
 
-# Запросы к Groq идут через встроенный бесплатный шлюз хостинга Amvera,
-# чтобы обходиться без сторонних прокси-серверов.
-AMVERA_GATEWAY_URL = "https://groq.amvera.ru/v1"
+# Адрес API Groq настраивается через переменную окружения GROQ_BASE_URL,
+# чтобы можно было указать шлюз/прокси-хост без изменения кода.
+base_url = os.environ.get("GROQ_BASE_URL", "https://groq.com")
 
-groq_client = AsyncGroq(api_key=GROQ_API_KEY, base_url=AMVERA_GATEWAY_URL)
-logger.info(f"Groq client base_url = {AMVERA_GATEWAY_URL}")
+groq_client = AsyncGroq(api_key=GROQ_API_KEY, base_url=base_url)
+logger.info(f"Groq client base_url = {base_url}")
 
 MODELS = {
     "llama4_scout": {
