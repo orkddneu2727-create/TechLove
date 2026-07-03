@@ -148,14 +148,14 @@ async def cmd_start(message: Message):
     model = MODELS[session["model"]]
     role = ROLES[session["role"]]
     text = (
-        f"👋 Привет, *{user.first_name}*\\!\n\n"
-        f"Я — ИИ\\-ассистент с доступом к лучшим *бесплатным* языковым моделям \\(Groq\\)\\.\n\n"
+        f"👋 Привет, *{user.first_name}*!\n\n"
+        f"Я — ИИ-ассистент с доступом к лучшим *бесплатным* языковым моделям (Groq).\n\n"
         f"📌 *Текущие настройки:*\n"
         f"• Модель: {model['emoji']} {model['name']}\n"
         f"• Роль: {role['emoji']} {role['name']}\n\n"
-        f"Просто напиши мне сообщение — и я отвечу\\!"
+        f"Просто напиши мне сообщение — и я отвечу!"
     )
-    await message.answer(text, parse_mode=ParseMode.MARKDOWN_V2, reply_markup=main_keyboard())
+    await message.answer(text, parse_mode=ParseMode.MARKDOWN, reply_markup=main_keyboard())
 
 
 @router.message(Command("help"))
@@ -169,8 +169,8 @@ async def cmd_help(message: Message):
     )
     text = (
         "📖 *Как пользоваться:*\n\n"
-        "Просто пишите сообщение — бот отвечает с учётом истории разговора\\.\n\n"
-        f"🤖 *Модели \\(все бесплатные\\):*\n{models_text}\n\n"
+        "Просто пишите сообщение — бот отвечает с учётом истории разговора.\n\n"
+        f"🤖 *Модели (все бесплатные):*\n{models_text}\n\n"
         f"🎭 *Роли:*\n{roles_text}\n\n"
         "⚙️ *Настройки* — регулировка температуры ответа\n"
         "🗑 *Новый диалог* — сбросить историю\n\n"
@@ -182,7 +182,7 @@ async def cmd_help(message: Message):
         "/status — текущие настройки\n"
         "/help — помощь"
     )
-    await message.answer(text, parse_mode=ParseMode.MARKDOWN_V2, reply_markup=main_keyboard())
+    await message.answer(text, parse_mode=ParseMode.MARKDOWN, reply_markup=main_keyboard())
 
 
 @router.message(Command("model"))
@@ -213,8 +213,8 @@ async def cmd_new(message: Message):
     session = get_session(message.from_user.id)
     session["history"] = []
     await message.answer(
-        "🗑 *История очищена\\.* Начинаем новый диалог\\!",
-        parse_mode=ParseMode.MARKDOWN_V2,
+        "🗑 *История очищена.* Начинаем новый диалог!",
+        parse_mode=ParseMode.MARKDOWN,
         reply_markup=main_keyboard()
     )
 
