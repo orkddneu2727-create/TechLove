@@ -375,14 +375,23 @@ async def set_commands(bot: Bot):
 async def main():
     bot = Bot(
         token=BOT_TOKEN,
-        default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN)
+        default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN),
     )
     dp = Dispatcher(storage=MemoryStorage())
     dp.include_router(router)
-    await set_commands(bot)
-    logger.info("Бот запущен на Groq!")
-    await dp.start_polling(bot, allowed_updates=["message", "callback_query"])
+
+    try:
+        await set_commands(bot)
+        logger.info("Бот запущен на Groq!")
+        await dp.start_polling(bot, allowed_updates=["message", "callback_query"])
+    finally:
+        logger.info("Останавливаю бота, закрываю сессию...")
+        await bot.session.close()
+        logger.info("Сессия закрыта.")
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except (KeyboardInterrupt, SystemExit):
+        logger.info("Бот остановлен.")
