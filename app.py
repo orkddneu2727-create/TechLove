@@ -12,7 +12,6 @@ from aiogram.types import (
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
 from groq import AsyncGroq
-import httpx
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
@@ -20,18 +19,12 @@ logger = logging.getLogger(__name__)
 BOT_TOKEN = os.environ["BOT_TOKEN"]
 GROQ_API_KEY = os.environ["GROQ_API_KEY"]
 
-# Опционально: если хостинг блокирует прямые запросы к Groq (например,
-# зарубежные API недоступны из РФ), укажите переменную окружения PROXY_URL
-# в формате protocol://user:password@host:port (http, https или socks5).
-# Пример: PROXY_URL=socks5://user:pass@1.2.3.4:1080
-PROXY_URL = os.environ.get("PROXY_URL")
+# Запросы к Groq идут через встроенный бесплатный шлюз хостинга Amvera,
+# чтобы обходиться без сторонних прокси-серверов.
+AMVERA_GATEWAY_URL = "https://amvera.ru"
 
-if PROXY_URL:
-    logger.info("Используется прокси для запросов к Groq API")
-    _http_client = httpx.AsyncClient(proxy=PROXY_URL, timeout=60.0)
-    groq_client = AsyncGroq(api_key=GROQ_API_KEY, http_client=_http_client)
-else:
-    groq_client = AsyncGroq(api_key=GROQ_API_KEY)
+groq_client = AsyncGroq(api_key=GROQ_API_KEY, base_url=AMVERA_GATEWAY_URL)
+logger.info(f"Groq client base_url = {AMVERA_GATEWAY_URL}")
 
 MODELS = {
     "llama4_scout": {
