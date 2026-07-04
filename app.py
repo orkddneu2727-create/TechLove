@@ -1,4 +1,10 @@
-import os
+import os, subprocess, sys
+try:
+    from groq import AsyncGroq
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "groq"])
+    from groq import AsyncGroq
+
 import asyncio
 import logging
 
@@ -11,7 +17,6 @@ from aiogram.types import (
 )
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
-from groq import AsyncGroq
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
