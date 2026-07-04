@@ -7,6 +7,7 @@ except ImportError:
 
 import asyncio
 import logging
+from datetime import datetime
 
 from aiogram import Bot, Dispatcher, F, Router
 from aiogram.enums import ParseMode
@@ -73,6 +74,12 @@ SYSTEM_PROMPTS = {
     "translator": "Ты профессиональный переводчик и лингвист. Переводи точно и естественно, сохраняя стиль и смысл оригинала. После перевода можешь дать короткий комментарий если нужно.",
     "tutor": "Ты терпеливый и опытный преподаватель. Объясняешь сложные темы простым языком, используешь примеры и аналогии. Проверяешь понимание.",
 }
+
+COMMON_INSTRUCTIONS = (
+    "Отвечай сразу по существу, без вступительных фраз и разъяснений о том, что ты сейчас будешь делать "
+    "(не пиши фразы вроде 'Конечно, вот ответ' или 'Хорошо, объясняю'). "
+    "Давай только сам ответ."
+)
 
 ROLES = {
     "default":    {"name": "Ассистент",   "emoji": "🤖"},
@@ -298,7 +305,12 @@ async def cb_noop(callback: CallbackQuery):
 
 async def call_groq(session: dict, user_message: str) -> str:
     model_id = MODELS[session["model"]]["model_id"]
-    system_prompt = SYSTEM_PROMPTS[session["role"]]
+    today = datetime.now().strftime("%d.%m.%Y")
+    system_prompt = (
+        f"Сегодняшняя дата: {today}. Используй эту дату как актуальную текущую дату и год, "
+        f"а не дату из своих обучающих данных.\n\n"
+        f"{SYSTEM_PROMPTS[session['role']]}\n\n{COMMON_INSTRUCTIONS}"
+    )
 
     session["history"].append({"role": "user", "content": user_message})
     if len(session["history"]) > 20:
