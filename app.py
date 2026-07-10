@@ -1,13 +1,9 @@
-import os, subprocess, sys
-try:
-    from groq import AsyncGroq
-except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "groq"])
-    from groq import AsyncGroq
-
+import os
 import asyncio
 import logging
+import json
 from datetime import datetime
+import aiohttp
 
 from aiogram import Bot, Dispatcher, F, Router
 from aiogram.enums import ParseMode
@@ -25,7 +21,7 @@ logger = logging.getLogger(__name__)
 BOT_TOKEN = os.environ["BOT_TOKEN"]
 GROQ_API_KEY = os.environ["GROQ_API_KEY"]
 
-groq_client = AsyncGroq(api_key=GROQ_API_KEY)
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 MODELS = {
     "llama4_scout": {
@@ -318,13 +314,20 @@ async def call_groq(session: dict, user_message: str) -> str:
 
     messages = [{"role": "system", "content": system_prompt}] + session["history"]
 
-    response = await groq_client.chat.completions.create(
-        model=model_id,
-        messages=messages,
-        temperature=session["temperature"],
-        max_tokens=2048,
-    )
-    reply = response.choices[0].message.content
+    payload = {
+        "model": model_id,
+        "messages": messages,
+        "temperature": session["temperature"],
+        "max_tokens": 2048,
+    }
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json",
+    }
+    async with aiohttp.ClientSession() as http:
+        async with http.post(GROQ_API_URL, json=payload, headers=headers) as resp:
+            data = await resp.json()
+    reply = data["choices"][0]["message"]["content"]
     session["history"].append({"role": "assistant", "content": reply})
     return reply
 
