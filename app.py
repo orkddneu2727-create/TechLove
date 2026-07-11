@@ -110,10 +110,10 @@ def main_keyboard() -> ReplyKeyboardMarkup:
 
 
 MODEL_STYLES = {
-    "llama4_scout": "primary",
+    "llama4_scout": "danger",
     "llama3_70b": "success",
-    "llama3_8b": None,
-    "qwen3_32b": None,
+    "llama3_8b": "primary",
+    "qwen3_32b": "success",
     "qwen3_27b": "primary",
     "compound": "danger",
 }
