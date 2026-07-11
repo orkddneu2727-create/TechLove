@@ -122,7 +122,7 @@ def models_keyboard(current: str) -> InlineKeyboardMarkup:
     buttons = []
     for key, model in MODELS.items():
         check = "✅ " if key == current else ""
-        style = "success" if key == current else MODEL_STYLES[key]
+        style = MODEL_STYLES[key]
         btn = InlineKeyboardButton(
             text=f"{check}{model['emoji']} {model['name']}",
             callback_data=f"model:{key}",
