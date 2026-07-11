@@ -109,14 +109,27 @@ def main_keyboard() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(keyboard=buttons, resize_keyboard=True)
 
 
+MODEL_STYLES = {
+    "llama4_scout": "primary",
+    "llama3_70b": "success",
+    "llama3_8b": None,
+    "qwen3_32b": None,
+    "qwen3_27b": "primary",
+    "compound": "danger",
+}
+
 def models_keyboard(current: str) -> InlineKeyboardMarkup:
     buttons = []
     for key, model in MODELS.items():
         check = "✅ " if key == current else ""
-        buttons.append([InlineKeyboardButton(
+        style = "success" if key == current else MODEL_STYLES[key]
+        btn = InlineKeyboardButton(
             text=f"{check}{model['emoji']} {model['name']}",
-            callback_data=f"model:{key}"
-        )])
+            callback_data=f"model:{key}",
+        )
+        if style:
+            btn.style = style
+        buttons.append([btn])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 

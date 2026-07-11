@@ -1,2 +1,1 @@
-aiogram==3.7.0
-groq==1.5.0
+aiogram==3.29.1
