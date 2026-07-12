@@ -381,30 +381,27 @@ async def handle_message(message: Message):
     role = ROLES[session["role"]]
 
     thinking_msg = await message.answer(
-        f"⏳ _{model['emoji']} {model['name']} думает..._",
-        parse_mode=ParseMode.MARKDOWN
+        f"⏳ <i>{model['emoji_html']} {model['name']} думает...</i>",
+        parse_mode=ParseMode.HTML
     )
 
     try:
         reply = await call_groq(session, text)
 
-        header = f"_{role['emoji']} {role['name']} · {model['name']}_\n\n"
-        full_reply = header + reply
+        header = f"<i>{role['emoji_html']} {role['name']} · {model['name']}</i>"
 
-        if len(full_reply) > 4096:
-            await thinking_msg.delete()
-            chunks = [full_reply[i:i + 4096] for i in range(0, len(full_reply), 4096)]
-            for chunk in chunks:
-                await message.answer(chunk, parse_mode=ParseMode.MARKDOWN)
-        else:
-            await thinking_msg.edit_text(full_reply, parse_mode=ParseMode.MARKDOWN)
+        await thinking_msg.edit_text(header, parse_mode=ParseMode.HTML)
+
+        chunks = [reply[i:i + 4096] for i in range(0, len(reply), 4096)]
+        for chunk in chunks:
+            await message.answer(chunk, parse_mode=ParseMode.MARKDOWN)
 
     except Exception as e:
         logger.error(f"Groq error for user {user_id}: {e}")
         err = str(e)[:300]
         await thinking_msg.edit_text(
-            f"❌ *Ошибка:* `{err}`\n\nПопробуйте:\n• Сменить модель /model\n• Новый диалог /new",
-            parse_mode=ParseMode.MARKDOWN
+            f"❌ <b>Ошибка:</b> <code>{err}</code>\n\nПопробуйте:\n• Сменить модель /model\n• Новый диалог /new",
+            parse_mode=ParseMode.HTML
         )
 
 
