@@ -93,12 +93,12 @@ COMMON_INSTRUCTIONS = (
 )
 
 ROLES = {
-    "default":    {"name": "Ассистент",    "emoji": "🤖",  "emoji_html": pe("5258093637450866522", "🤖"), "emoji_id": "5258093637450866522"},
-    "coder":      {"name": "Программист",  "emoji": "👨‍💻", "emoji_html": "👨‍💻", "emoji_id": None},
-    "writer":     {"name": "Писатель",     "emoji": "✍️",  "emoji_html": "✍️",  "emoji_id": None},
-    "analyst":    {"name": "Аналитик",     "emoji": "📊",  "emoji_html": "📊",  "emoji_id": None},
-    "translator": {"name": "Переводчик",   "emoji": "🌐",  "emoji_html": "🌐",  "emoji_id": None},
-    "tutor":      {"name": "Преподаватель","emoji": "🎓",  "emoji_html": "🎓",  "emoji_id": None},
+    "default":    {"name": "Ассистент",    "emoji": "🤖",  "emoji_html": pe("5258093637450866522", "🤖"),  "emoji_id": "5258093637450866522"},
+    "coder":      {"name": "Программист",  "emoji": "👨‍💻", "emoji_html": pe("5444965061749644170", "👨‍💻"), "emoji_id": "5444965061749644170"},
+    "writer":     {"name": "Писатель",     "emoji": "✍️",  "emoji_html": pe("5879841310902324730", "✍️"),  "emoji_id": "5879841310902324730"},
+    "analyst":    {"name": "Аналитик",     "emoji": "📊",  "emoji_html": pe("5870921681735781843", "📊"),  "emoji_id": "5870921681735781843"},
+    "translator": {"name": "Переводчик",   "emoji": "🌐",  "emoji_html": pe("5972247240217988372", "🌐"),  "emoji_id": "5972247240217988372"},
+    "tutor":      {"name": "Преподаватель","emoji": "🎓",  "emoji_html": pe("5206402318769076760", "🎓"),  "emoji_id": "5206402318769076760"},
 }
 
 user_sessions: dict[int, dict] = {}
@@ -153,13 +153,11 @@ def roles_keyboard(current: str) -> InlineKeyboardMarkup:
     buttons = []
     for key, role in ROLES.items():
         check = "✅ " if key == current else ""
-        text = f"{check}{role['name']}" if role["emoji_id"] else f"{check}{role['emoji']} {role['name']}"
         btn = InlineKeyboardButton(
-            text=text,
+            text=f"{check}{role['name']}",
             callback_data=f"role:{key}",
+            icon_custom_emoji_id=role["emoji_id"],
         )
-        if role["emoji_id"]:
-            btn.icon_custom_emoji_id = role["emoji_id"]
         buttons.append([btn])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
@@ -212,7 +210,7 @@ async def cmd_help(message: Message):
         "📖 <b>Как пользоваться:</b>\n\n"
         "Просто пишите сообщение — бот отвечает с учётом истории разговора.\n\n"
         f"{pe('5258093637450866522', '🤖')} <b>Модели (все бесплатные):</b>\n{models_text}\n\n"
-        f"🎭 <b>Роли:</b>\n{roles_text}\n\n"
+        f"{pe('6032625495328165724', '🎭')} <b>Роли:</b>\n{roles_text}\n\n"
         "⚙️ <b>Настройки</b> — регулировка температуры ответа\n"
         "🗑 <b>Новый диалог</b> — сбросить историю\n\n"
         "📝 <b>Команды:</b>\n"
@@ -242,7 +240,7 @@ async def cmd_model(message: Message):
 async def cmd_role(message: Message):
     session = get_session(message.from_user.id)
     await message.answer(
-        "🎭 <b>Выберите роль ассистента:</b>",
+        f"{pe('6032625495328165724', '🎭')} <b>Выберите роль ассистента:</b>",
         parse_mode=ParseMode.HTML,
         reply_markup=roles_keyboard(session["role"])
     )
@@ -287,7 +285,7 @@ async def cb_model(callback: CallbackQuery):
     session["model"] = model_key
     model = MODELS[model_key]
     await callback.message.edit_text(
-        f"✅ Модель: {model['emoji_html']} <b>{model['name']}</b>\n\n<i>{model['description']}</i>",
+        f"{pe('5370893703575511656', '✅')} Модель: {model['emoji_html']} <b>{model['name']}</b>\n\n<i>{model['description']}</i>",
         parse_mode=ParseMode.HTML,
         reply_markup=models_keyboard(model_key)
     )
@@ -302,7 +300,7 @@ async def cb_role(callback: CallbackQuery):
     session["history"] = []
     role = ROLES[role_key]
     await callback.message.edit_text(
-        f"✅ Роль: {role['emoji_html']} <b>{role['name']}</b>\n\n<i>История очищена для применения новой роли.</i>",
+        f"{pe('5370893703575511656', '✅')} Роль: {role['emoji_html']} <b>{role['name']}</b>\n\n<i>История очищена для применения новой роли.</i>",
         parse_mode=ParseMode.HTML,
         reply_markup=roles_keyboard(role_key)
     )
