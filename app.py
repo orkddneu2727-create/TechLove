@@ -23,42 +23,51 @@ GROQ_API_KEY = os.environ["GROQ_API_KEY"]
 
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
+def pe(emoji_id: str, fallback: str) -> str:
+    return f'<tg-emoji emoji-id="{emoji_id}">{fallback}</tg-emoji>'
+
 MODELS = {
     "llama4_scout": {
         "name": "Llama 4 Scout",
         "model_id": "meta-llama/llama-4-scout-17b-16e-instruct",
         "description": "Новейшая Llama 4 от Meta. Умная, быстрая, бесплатная.",
         "emoji": "🦙",
+        "emoji_html": pe("5926783847453692661", "🦙"),
     },
     "llama3_70b": {
         "name": "Llama 3.3 70B",
         "model_id": "llama-3.3-70b-versatile",
         "description": "Мощная универсальная модель. Отлично справляется с любыми задачами.",
         "emoji": "🧠",
+        "emoji_html": pe("5805553606635559688", "🧠"),
     },
     "llama3_8b": {
         "name": "Llama 3.1 8B",
         "model_id": "llama-3.1-8b-instant",
         "description": "Молниеносная лёгкая модель. Идеальна для быстрых ответов.",
         "emoji": "⚡",
+        "emoji_html": pe("5323761960829862762", "⚡️"),
     },
     "qwen3_32b": {
         "name": "Qwen3 32B",
         "model_id": "qwen/qwen3-32b",
         "description": "Флагманская модель Alibaba. Глубокое мышление и высокое качество.",
         "emoji": "🌀",
+        "emoji_html": pe("5388957777676745182", "🌀"),
     },
     "qwen3_27b": {
         "name": "Qwen3.6 27B",
         "model_id": "qwen/qwen3.6-27b",
         "description": "Новейшая Qwen3.6. Отличный баланс скорости и интеллекта.",
         "emoji": "🔮",
+        "emoji_html": pe("5776233299424843260", "🔮"),
     },
     "compound": {
         "name": "Groq Compound",
         "model_id": "groq/compound",
         "description": "Составная модель от Groq. Объединяет несколько ИИ для лучшего результата.",
         "emoji": "⚗️",
+        "emoji_html": pe("5913787972200698358", "⚗️"),
     },
 }
 
@@ -78,12 +87,12 @@ COMMON_INSTRUCTIONS = (
 )
 
 ROLES = {
-    "default":    {"name": "Ассистент",   "emoji": "🤖"},
-    "coder":      {"name": "Программист", "emoji": "👨‍💻"},
-    "writer":     {"name": "Писатель",    "emoji": "✍️"},
-    "analyst":    {"name": "Аналитик",    "emoji": "📊"},
-    "translator": {"name": "Переводчик",  "emoji": "🌐"},
-    "tutor":      {"name": "Преподаватель","emoji": "🎓"},
+    "default":    {"name": "Ассистент",    "emoji": "🤖",  "emoji_html": pe("5258093637450866522", "🤖")},
+    "coder":      {"name": "Программист",  "emoji": "👨‍💻", "emoji_html": "👨‍💻"},
+    "writer":     {"name": "Писатель",     "emoji": "✍️",  "emoji_html": "✍️"},
+    "analyst":    {"name": "Аналитик",     "emoji": "📊",  "emoji_html": "📊"},
+    "translator": {"name": "Переводчик",   "emoji": "🌐",  "emoji_html": "🌐"},
+    "tutor":      {"name": "Преподаватель","emoji": "🎓",  "emoji_html": "🎓"},
 }
 
 user_sessions: dict[int, dict] = {}
@@ -169,33 +178,33 @@ async def cmd_start(message: Message):
     model = MODELS[session["model"]]
     role = ROLES[session["role"]]
     text = (
-        f"👋 Привет, *{user.first_name}*!\n\n"
-        f"Я — ИИ-ассистент с доступом к лучшим *бесплатным* языковым моделям (Groq).\n\n"
-        f"📌 *Текущие настройки:*\n"
-        f"• Модель: {model['emoji']} {model['name']}\n"
-        f"• Роль: {role['emoji']} {role['name']}\n\n"
+        f"👋 Привет, <b>{user.first_name}</b>!\n\n"
+        f"Я — ИИ-ассистент с доступом к лучшим <b>бесплатным</b> языковым моделям (Groq).\n\n"
+        f"📌 <b>Текущие настройки:</b>\n"
+        f"• Модель: {model['emoji_html']} {model['name']}\n"
+        f"• Роль: {role['emoji_html']} {role['name']}\n\n"
         f"Просто напиши мне сообщение — и я отвечу!"
     )
-    await message.answer(text, parse_mode=ParseMode.MARKDOWN, reply_markup=main_keyboard())
+    await message.answer(text, parse_mode=ParseMode.HTML, reply_markup=main_keyboard())
 
 
 @router.message(Command("help"))
 @router.message(F.text == "ℹ️ Помощь")
 async def cmd_help(message: Message):
     models_text = "\n".join(
-        f"• {m['emoji']} *{m['name']}* — {m['description']}" for m in MODELS.values()
+        f"• {m['emoji_html']} <b>{m['name']}</b> — {m['description']}" for m in MODELS.values()
     )
     roles_text = "\n".join(
-        f"• {r['emoji']} *{r['name']}*" for r in ROLES.values()
+        f"• {r['emoji_html']} <b>{r['name']}</b>" for r in ROLES.values()
     )
     text = (
-        "📖 *Как пользоваться:*\n\n"
+        "📖 <b>Как пользоваться:</b>\n\n"
         "Просто пишите сообщение — бот отвечает с учётом истории разговора.\n\n"
-        f"🤖 *Модели (все бесплатные):*\n{models_text}\n\n"
-        f"🎭 *Роли:*\n{roles_text}\n\n"
-        "⚙️ *Настройки* — регулировка температуры ответа\n"
-        "🗑 *Новый диалог* — сбросить историю\n\n"
-        "📝 *Команды:*\n"
+        f"{pe('5258093637450866522', '🤖')} <b>Модели (все бесплатные):</b>\n{models_text}\n\n"
+        f"🎭 <b>Роли:</b>\n{roles_text}\n\n"
+        "⚙️ <b>Настройки</b> — регулировка температуры ответа\n"
+        "🗑 <b>Новый диалог</b> — сбросить историю\n\n"
+        "📝 <b>Команды:</b>\n"
         "/start — главное меню\n"
         "/new — новый диалог\n"
         "/model — сменить модель\n"
@@ -203,7 +212,7 @@ async def cmd_help(message: Message):
         "/status — текущие настройки\n"
         "/help — помощь"
     )
-    await message.answer(text, parse_mode=ParseMode.MARKDOWN, reply_markup=main_keyboard())
+    await message.answer(text, parse_mode=ParseMode.HTML, reply_markup=main_keyboard())
 
 
 @router.message(Command("model"))
@@ -211,8 +220,8 @@ async def cmd_help(message: Message):
 async def cmd_model(message: Message):
     session = get_session(message.from_user.id)
     await message.answer(
-        "🤖 *Выберите модель ИИ:*",
-        parse_mode=ParseMode.MARKDOWN,
+        f"{pe('5258093637450866522', '🤖')} <b>Выберите модель ИИ:</b>",
+        parse_mode=ParseMode.HTML,
         reply_markup=models_keyboard(session["model"])
     )
 
@@ -222,8 +231,8 @@ async def cmd_model(message: Message):
 async def cmd_role(message: Message):
     session = get_session(message.from_user.id)
     await message.answer(
-        "🎭 *Выберите роль ассистента:*",
-        parse_mode=ParseMode.MARKDOWN,
+        "🎭 <b>Выберите роль ассистента:</b>",
+        parse_mode=ParseMode.HTML,
         reply_markup=roles_keyboard(session["role"])
     )
 
@@ -234,8 +243,8 @@ async def cmd_new(message: Message):
     session = get_session(message.from_user.id)
     session["history"] = []
     await message.answer(
-        "🗑 *История очищена.* Начинаем новый диалог!",
-        parse_mode=ParseMode.MARKDOWN,
+        "🗑 <b>История очищена.</b> Начинаем новый диалог!",
+        parse_mode=ParseMode.HTML,
         reply_markup=main_keyboard()
     )
 
@@ -247,15 +256,15 @@ async def cmd_status(message: Message):
     model = MODELS[session["model"]]
     role = ROLES[session["role"]]
     text = (
-        f"⚙️ *Текущие настройки:*\n\n"
-        f"🤖 Модель: {model['emoji']} *{model['name']}*\n"
-        f"🎭 Роль: {role['emoji']} *{role['name']}*\n"
-        f"🌡 Температура: *{session['temperature']:.1f}*\n"
-        f"💬 Сообщений в истории: *{len(session['history'])}*"
+        f"⚙️ <b>Текущие настройки:</b>\n\n"
+        f"{pe('5258093637450866522', '🤖')} Модель: {model['emoji_html']} <b>{model['name']}</b>\n"
+        f"🎭 Роль: {role['emoji_html']} <b>{role['name']}</b>\n"
+        f"🌡 Температура: <b>{session['temperature']:.1f}</b>\n"
+        f"💬 Сообщений в истории: <b>{len(session['history'])}</b>"
     )
     await message.answer(
         text,
-        parse_mode=ParseMode.MARKDOWN,
+        parse_mode=ParseMode.HTML,
         reply_markup=settings_keyboard(message.from_user.id)
     )
 
@@ -267,8 +276,8 @@ async def cb_model(callback: CallbackQuery):
     session["model"] = model_key
     model = MODELS[model_key]
     await callback.message.edit_text(
-        f"✅ Модель: {model['emoji']} *{model['name']}*\n\n_{model['description']}_",
-        parse_mode=ParseMode.MARKDOWN,
+        f"✅ Модель: {model['emoji_html']} <b>{model['name']}</b>\n\n<i>{model['description']}</i>",
+        parse_mode=ParseMode.HTML,
         reply_markup=models_keyboard(model_key)
     )
     await callback.answer(f"Выбрана: {model['name']}")
@@ -282,8 +291,8 @@ async def cb_role(callback: CallbackQuery):
     session["history"] = []
     role = ROLES[role_key]
     await callback.message.edit_text(
-        f"✅ Роль: {role['emoji']} *{role['name']}*\n\n_История очищена для применения новой роли\\._",
-        parse_mode=ParseMode.MARKDOWN,
+        f"✅ Роль: {role['emoji_html']} <b>{role['name']}</b>\n\n<i>История очищена для применения новой роли.</i>",
+        parse_mode=ParseMode.HTML,
         reply_markup=roles_keyboard(role_key)
     )
     await callback.answer(f"Роль: {role['name']}")
