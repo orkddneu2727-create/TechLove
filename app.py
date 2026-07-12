@@ -33,6 +33,7 @@ MODELS = {
         "description": "Новейшая Llama 4 от Meta. Умная, быстрая, бесплатная.",
         "emoji": "🦙",
         "emoji_html": pe("5926783847453692661", "🦙"),
+        "emoji_id": "5926783847453692661",
     },
     "llama3_70b": {
         "name": "Llama 3.3 70B",
@@ -40,6 +41,7 @@ MODELS = {
         "description": "Мощная универсальная модель. Отлично справляется с любыми задачами.",
         "emoji": "🧠",
         "emoji_html": pe("5805553606635559688", "🧠"),
+        "emoji_id": "5805553606635559688",
     },
     "llama3_8b": {
         "name": "Llama 3.1 8B",
@@ -47,6 +49,7 @@ MODELS = {
         "description": "Молниеносная лёгкая модель. Идеальна для быстрых ответов.",
         "emoji": "⚡",
         "emoji_html": pe("5323761960829862762", "⚡️"),
+        "emoji_id": "5323761960829862762",
     },
     "qwen3_32b": {
         "name": "Qwen3 32B",
@@ -54,6 +57,7 @@ MODELS = {
         "description": "Флагманская модель Alibaba. Глубокое мышление и высокое качество.",
         "emoji": "🌀",
         "emoji_html": pe("5388957777676745182", "🌀"),
+        "emoji_id": "5388957777676745182",
     },
     "qwen3_27b": {
         "name": "Qwen3.6 27B",
@@ -61,6 +65,7 @@ MODELS = {
         "description": "Новейшая Qwen3.6. Отличный баланс скорости и интеллекта.",
         "emoji": "🔮",
         "emoji_html": pe("5776233299424843260", "🔮"),
+        "emoji_id": "5776233299424843260",
     },
     "compound": {
         "name": "Groq Compound",
@@ -68,6 +73,7 @@ MODELS = {
         "description": "Составная модель от Groq. Объединяет несколько ИИ для лучшего результата.",
         "emoji": "⚗️",
         "emoji_html": pe("5913787972200698358", "⚗️"),
+        "emoji_id": "5913787972200698358",
     },
 }
 
@@ -87,12 +93,12 @@ COMMON_INSTRUCTIONS = (
 )
 
 ROLES = {
-    "default":    {"name": "Ассистент",    "emoji": "🤖",  "emoji_html": pe("5258093637450866522", "🤖")},
-    "coder":      {"name": "Программист",  "emoji": "👨‍💻", "emoji_html": "👨‍💻"},
-    "writer":     {"name": "Писатель",     "emoji": "✍️",  "emoji_html": "✍️"},
-    "analyst":    {"name": "Аналитик",     "emoji": "📊",  "emoji_html": "📊"},
-    "translator": {"name": "Переводчик",   "emoji": "🌐",  "emoji_html": "🌐"},
-    "tutor":      {"name": "Преподаватель","emoji": "🎓",  "emoji_html": "🎓"},
+    "default":    {"name": "Ассистент",    "emoji": "🤖",  "emoji_html": pe("5258093637450866522", "🤖"), "emoji_id": "5258093637450866522"},
+    "coder":      {"name": "Программист",  "emoji": "👨‍💻", "emoji_html": "👨‍💻", "emoji_id": None},
+    "writer":     {"name": "Писатель",     "emoji": "✍️",  "emoji_html": "✍️",  "emoji_id": None},
+    "analyst":    {"name": "Аналитик",     "emoji": "📊",  "emoji_html": "📊",  "emoji_id": None},
+    "translator": {"name": "Переводчик",   "emoji": "🌐",  "emoji_html": "🌐",  "emoji_id": None},
+    "tutor":      {"name": "Преподаватель","emoji": "🎓",  "emoji_html": "🎓",  "emoji_id": None},
 }
 
 user_sessions: dict[int, dict] = {}
@@ -133,8 +139,9 @@ def models_keyboard(current: str) -> InlineKeyboardMarkup:
         check = "✅ " if key == current else ""
         style = MODEL_STYLES[key]
         btn = InlineKeyboardButton(
-            text=f"{check}{model['emoji']} {model['name']}",
+            text=f"{check}{model['name']}",
             callback_data=f"model:{key}",
+            icon_custom_emoji_id=model["emoji_id"],
         )
         if style:
             btn.style = style
@@ -146,10 +153,14 @@ def roles_keyboard(current: str) -> InlineKeyboardMarkup:
     buttons = []
     for key, role in ROLES.items():
         check = "✅ " if key == current else ""
-        buttons.append([InlineKeyboardButton(
-            text=f"{check}{role['emoji']} {role['name']}",
-            callback_data=f"role:{key}"
-        )])
+        text = f"{check}{role['name']}" if role["emoji_id"] else f"{check}{role['emoji']} {role['name']}"
+        btn = InlineKeyboardButton(
+            text=text,
+            callback_data=f"role:{key}",
+        )
+        if role["emoji_id"]:
+            btn.icon_custom_emoji_id = role["emoji_id"]
+        buttons.append([btn])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
